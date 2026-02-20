@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,13 +19,17 @@ import {
   ApiOkResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
 import { AssignmentService } from './assignment.service';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 import { AssignmentResponseDto } from './dto/assignment-response.dto';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
+@ApiBearerAuth('access-token')
+@UseGuards(JwtAuthGuard)
 @ApiTags('assignments')
 @Controller('assignments')
 export class AssignmentController {
@@ -55,16 +60,28 @@ export class AssignmentController {
     return this.service.findOne(id);
   }
 
-  // =============== FIND BY SECTION =================
-  @Get('section/:id')
-  @ApiOperation({ summary: 'Get all assignments by section ID' })
+  // // =============== FIND BY SECTION =================
+  // @Get('section/:id')
+  // @ApiOperation({ summary: 'Get all assignments by section ID' })
+  // @ApiParam({ name: 'id', example: 3 })
+  // @ApiOkResponse({
+  //   description: 'List of assignments in the section',
+  //   type: [AssignmentResponseDto],
+  // })
+  // findBySection(@Param('id', ParseIntPipe) id: number) {
+  //   return this.service.findAllBySection(id);
+  // }
+
+  // =============== FIND BY CLASSROOM =================
+  @Get('classroom/:id')
+  @ApiOperation({ summary: 'Get all assignments by classroom ID' })
   @ApiParam({ name: 'id', example: 3 })
   @ApiOkResponse({
-    description: 'List of assignments in the section',
+    description: 'List of assignments in the classroom',
     type: [AssignmentResponseDto],
   })
-  findBySection(@Param('id', ParseIntPipe) id: number) {
-    return this.service.findAllBySection(id);
+  findByClassroom(@Param('id', ParseIntPipe) id: number) {
+    return this.service.findAllByClassroom(id);
   }
 
   // =============== UPDATE =================
