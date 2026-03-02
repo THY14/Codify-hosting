@@ -122,6 +122,23 @@ export class AssignmentService {
 
     return this.repo.update(assignment);
   }
+
+  async unPublish(
+    id: number,
+    classroomId: number,
+    userId: number,
+  ) {
+    await this.membershipService.ensureRole(
+      classroomId,
+      userId,
+      [Role.OWNER, Role.TEACHER]
+    );
+
+    const assignment = await this.findOne(id, classroomId, userId);
+    assignment.unPublish();
+
+    return this.repo.update(assignment);
+  }
   
   async delete(
     id: number,
