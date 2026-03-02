@@ -61,7 +61,7 @@ export class ClassroomMemberRepositoryPrisma
   async findMembers(classroomId: number): Promise<ClassroomMember[]> {
     const results = await this.prisma.classroomUser.findMany({
       where: { classroom_id: classroomId },
-      include: { user: { select: { name: true } } },
+      include: { user: { select: { name: true, email: true } } },
     });
 
     return results.map((result) =>
@@ -69,6 +69,7 @@ export class ClassroomMemberRepositoryPrisma
         userId: result.user_id,
         role: result.role as Role,
         name: result.user.name,
+        email: result.user.email
       })
     );
   }
@@ -82,7 +83,7 @@ export class ClassroomMemberRepositoryPrisma
       include: { 
         user: { 
           select: { 
-            name: true 
+            name: true,
           } 
         } 
       },

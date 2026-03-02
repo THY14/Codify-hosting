@@ -131,7 +131,6 @@ export class ClassroomsController {
     return this.service.update(classroomId, dto, user.id);
   }
 
-
   // =============== DELETE =================
   @Delete(':classroomId')
   @HttpCode(204)
@@ -195,6 +194,7 @@ export class ClassroomsController {
       },
     },
   })
+    
   async changeMemberRole(
     @Param('classroomId', ParseIntPipe) classroomId: number,
     @Param('userId', ParseIntPipe) userId: number,
@@ -222,8 +222,16 @@ export class ClassroomsController {
   @Get(':classroomId/members/:memberId')
   @ApiOperation({ summary: 'Get a specific classroom member' })
   @ApiParam({ name: 'classroomId', example: 1 })
-  @ApiParam({ name: 'userId', example: 2 })
-  @ApiOkResponse({ description: 'Member found', type: ClassroomMemberResponseDto })
+  @ApiOkResponse({
+    description: 'Member found',
+    schema: {
+      example: {
+        userId: 1,
+        role: 'STUDENT',
+        name: 'John Doe',
+      },
+    },
+  })
   @ApiNotFoundResponse({ description: 'Member not found' })
   async getMember(
     @Param('classroomId', ParseIntPipe) classroomId: number,
