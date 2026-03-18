@@ -1652,3 +1652,231 @@ As a student, I want to receive execution feedback so I can improve my code.
  
 ---
 
+# FEATURE 11: Feedbacks — CRUD Feedbacks
+ 
+**User Story:**
+- US-FB-01: As a teacher, I want to create feedback on student submissions so that students can understand their performance.
+- US-FB-02: As a student, I want to view feedback on my submission so that I can improve my solution.
+- US-FB-03: As a teacher, I want to update or delete feedback so that I can correct or refine my evaluation.
+- US-FB-04: As a system, I must store feedback and link it to submissions, assignments, and students.
+ 
+**Functional Scenario: Teacher Manages Feedback**
+ 
+1. Teacher opens a student submission.
+2. Teacher writes feedback.
+3. Teacher submits feedback.
+4. Backend stores feedback linked to the submission.
+5. Student retrieves and views the feedback.
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-FB-01: Teacher successfully creates feedback for a submission |
+| **Purpose** | Verify that the system allows a teacher to create feedback for a student submission. |
+| **Initiation Criteria** | Teacher is authenticated. Submission exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a POST request to `/submissions/{submissionId}/feedbacks`.<br>2. Provide `{ "content": "Good effort, but improve your loop logic." }` in the request body.<br>3. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 201 Created. Feedback is stored and linked to the submission, assignment, and student. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-FB-02: Teacher tries to create feedback for a submission that does not exist |
+| **Purpose** | Verify that the API validates submission existence before creating feedback and returns a clear error if the submission is not found. |
+| **Initiation Criteria** | Teacher is authenticated. No submission with the provided ID exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a POST request to `/submissions/999/feedbacks`.<br>2. Provide feedback content in the request body.<br>3. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 404 Not Found with message "Submission not found". |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-FB-03: User attempts to create feedback without providing an authentication token |
+| **Purpose** | Verify that the API requires authentication before allowing feedback creation. |
+| **Initiation Criteria** | Submission exists. No authentication token is present. |
+| **Execution Steps** | 1. Send a POST request to `/submissions/{submissionId}/feedbacks`.<br>2. Provide valid feedback content in the request body.<br>3. Do not include any Authorization header in the request. |
+| **Expected Results** | API returns 401 Unauthorized. Feedback is not created. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-FB-04: Teacher retrieves all feedbacks for a submission |
+| **Purpose** | Verify that the system returns all feedback records related to a specific submission. |
+| **Initiation Criteria** | Submission exists and has at least one feedback record. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a GET request to `/submissions/{submissionId}/feedbacks`.<br>2. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 200 OK. Response body contains a list of all feedbacks for the submission. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-FB-05: Teacher tries to retrieve feedbacks for a submission that does not exist |
+| **Purpose** | Ensure that the API handles an invalid submission ID correctly and returns a clear not-found error. |
+| **Initiation Criteria** | No submission with the provided ID exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a GET request to `/submissions/999/feedbacks`.<br>2. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 404 Not Found. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-FB-06: Teacher successfully updates existing feedback |
+| **Purpose** | Verify that a teacher can update the content of an existing feedback record. |
+| **Initiation Criteria** | Teacher is authenticated. Feedback with a known ID exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a PUT request to `/submissions/{submissionId}/feedbacks/{feedbackId}`.<br>2. Provide `{ "content": "Updated feedback content." }` in the request body.<br>3. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 200 OK. Feedback record is updated in the database with the new content. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-FB-07: Teacher tries to update feedback that does not exist |
+| **Purpose** | Ensure that the API handles update requests for non-existing feedback IDs and returns a clear error. |
+| **Initiation Criteria** | No feedback with the provided ID exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a PUT request to `/submissions/{submissionId}/feedbacks/999`.<br>2. Provide updated feedback content in the request body.<br>3. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 404 Not Found. Feedback is not updated. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-FB-08: Teacher successfully deletes existing feedback |
+| **Purpose** | Verify that a teacher can permanently delete a feedback record from a submission. |
+| **Initiation Criteria** | Teacher is authenticated. Feedback with a known ID exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a DELETE request to `/submissions/{submissionId}/feedbacks/{feedbackId}`.<br>2. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 204 No Content. Feedback is removed from the database. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-FB-09: Teacher tries to delete feedback that does not exist |
+| **Purpose** | Ensure that the API handles deletion requests for non-existing feedback IDs and returns a clear error. |
+| **Initiation Criteria** | No feedback with the provided ID exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a DELETE request to `/submissions/{submissionId}/feedbacks/999`.<br>2. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 404 Not Found. No database changes occur. |
+ 
+---
+
+# FEATURE 12: Profile — User Profile & Classroom Profile
+ 
+**User Story:**
+- US-PF-01: As a user, I want to retrieve my profile so that I can see my personal information.
+- US-PF-02: As a user, I want to upload or update my profile so that my information is up to date.
+- US-PF-03: As a system, I must return a default permanent color when a user or classroom has no profile image.
+- US-PF-04: As a user, I want to retrieve a classroom profile so that I can see classroom details.
+- US-PF-05: As a system, I must store user and classroom profile data correctly in the database.
+ 
+**Functional Scenario: User and Classroom Profile Handling**
+ 
+1. User logs into the system.
+2. User requests profile information.
+3. Backend returns profile data.
+4. If no profile image exists, the system assigns a permanent color.
+5. User uploads or updates their profile.
+6. User retrieves a classroom profile.
+7. Backend returns classroom profile with image or default color.
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-01: User successfully retrieves their own profile |
+| **Purpose** | Verify that the system returns user profile information correctly when the user is authenticated. |
+| **Initiation Criteria** | User is authenticated. User profile exists in the database. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a GET request to `/users/profile`.<br>2. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 200 OK. Response contains user profile data including name, email, and either a profileImage or an assigned color. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-02: System returns a permanent color when user has no profile image |
+| **Purpose** | Verify that the system assigns and returns a permanent default color when no profile image is stored for the user. |
+| **Initiation Criteria** | User is authenticated. No profile image is stored for the user. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a GET request to `/users/profile`.<br>2. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 200 OK. Response includes a generated permanent color in place of a profile image. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-03: User attempts to retrieve their profile without an authentication token |
+| **Purpose** | Verify that the API requires authentication before returning any profile data. |
+| **Initiation Criteria** | No authentication token is present. |
+| **Execution Steps** | 1. Send a GET request to `/users/profile`.<br>2. Do not include any Authorization header in the request. |
+| **Expected Results** | API returns 401 Unauthorized. No profile data is returned. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-04: User successfully uploads or updates their profile |
+| **Purpose** | Verify that a user can upload or update their profile information including name and profile image. |
+| **Initiation Criteria** | User is authenticated. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a PUT request to `/users/profile`.<br>2. Provide `{ "name": "John Doe", "profileImage": "base64orURL" }` in the request body.<br>3. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 200 OK. Profile is updated and stored in the database with the new data. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-05: User submits invalid or empty data when updating profile |
+| **Purpose** | Ensure that the API validates profile input data and rejects empty or malformed requests. |
+| **Initiation Criteria** | User is authenticated. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a PUT request to `/users/profile`.<br>2. Provide an empty JSON body `{}` or invalid field values in the request body.<br>3. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 400 Bad Request with a validation error message. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-06: User successfully retrieves a classroom profile |
+| **Purpose** | Verify that the system returns classroom profile information correctly when requested by an authenticated user. |
+| **Initiation Criteria** | User is authenticated. Classroom with a known ID exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a GET request to `/classrooms/{classroomId}`.<br>2. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 200 OK. Response contains classroom profile data including name and either an image or an assigned color. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-07: System returns a permanent color when classroom has no profile image |
+| **Purpose** | Verify that the system assigns and returns a permanent default color when no profile image is stored for the classroom. |
+| **Initiation Criteria** | Classroom exists but has no profile image stored. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a GET request to `/classrooms/{classroomId}` for a classroom with no image.<br>2. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 200 OK. Response includes a default permanent color in place of a profile image. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-08: User tries to retrieve a classroom profile that does not exist |
+| **Purpose** | Ensure that the API handles an invalid classroom ID correctly and returns a clear not-found error. |
+| **Initiation Criteria** | No classroom with the provided ID exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a GET request to `/classrooms/999`.<br>2. Include a valid authentication token in the request header. |
+| **Expected Results** | API returns 404 Not Found. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-09: Teacher successfully uploads or updates a classroom profile |
+| **Purpose** | Verify that an authorized user such as a teacher or admin can update the classroom profile information. |
+| **Initiation Criteria** | User is authenticated with teacher or admin role. Classroom with a known ID exists. A valid authentication token is available. |
+| **Execution Steps** | 1. Send a PUT request to `/classrooms/{classroomId}`.<br>2. Provide `{ "name": "Advanced Math", "image": "base64orURL" }` in the request body.<br>3. Include a valid teacher or admin authentication token in the request header. |
+| **Expected Results** | API returns 200 OK. Classroom profile is updated and stored in the database with the new data. |
+ 
+---
+ 
+| Test Case Field | Details |
+|---|---|
+| **Test Case ID: Test Case Name** | TC-PF-10: Student attempts to update a classroom profile |
+| **Purpose** | Ensure that only authorized users can update a classroom profile and that students are blocked from this action. |
+| **Initiation Criteria** | User is authenticated with student role. Classroom with a known ID exists. A valid student authentication token is available. |
+| **Execution Steps** | 1. Send a PUT request to `/classrooms/{classroomId}`.<br>2. Provide profile data in the request body.<br>3. Include a valid student authentication token in the request header. |
+| **Expected Results** | API returns 403 Forbidden. Classroom profile update is not performed. |
+ 
+---
