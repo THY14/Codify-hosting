@@ -150,6 +150,35 @@ export class AssignmentPrismaRepository implements AssignmentRepository {
     );
   }
 
+  async findOneWithChallenges(id: number, classroomId: number, userId: number) {
+    const result = await this.prisma.assignment.findUnique({
+      where: {
+        id: id
+      },
+      include: {
+        assignmentChallenges: true
+      }
+    });
+
+    return result;
+  }
+
+  async findAssignmentChallengeDetail(assignmentId: number, challengeId: number) {
+    const result = await this.prisma.assignmentChallenge.findUnique({
+      where: {
+        assignment_id_original_challenge_id: {
+          assignment_id: assignmentId,
+          original_challenge_id: challengeId
+        }
+      },
+      include: {
+        test_cases: true
+      }
+    });
+
+    return result;
+  }
+
   async update(assignment: Assignment): Promise<Assignment> {
     const result = await this.prisma.assignment.update({
       where: { id: assignment.id! },

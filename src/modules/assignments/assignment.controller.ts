@@ -57,6 +57,25 @@ export class AssignmentController {
     return this.service.create(classroomId, user.id, dto);
   }
 
+  @Get(':id/challenges/:challengeId')
+  @ApiOperation({ summary: 'Get assignment challenge detail' })
+  @ApiParam({ name: 'classroomId', example: 3, description: 'Classroom ID' })
+  @ApiParam({ name: 'id', example: 1, description: 'Assignment ID' })
+  @ApiParam({ name: 'challengeId', example: 5, description: 'Challenge ID' })
+  getChallengeDetail(
+    @Param('classroomId', ParseIntPipe) classroomId: number,
+    @Param('id', ParseIntPipe) assignmentId: number,
+    @Param('challengeId', ParseIntPipe) challengeId: number,
+    @CurrentUser() user: CurrentUserDto,
+  ) {
+    return this.service.getChallengeDetail(
+      classroomId,
+      assignmentId,
+      challengeId,
+      user.id,
+    );
+  }
+
   @Post(':id/challenges')
   @ApiOperation({ summary: 'Attach coding challenges to assignment' })
   @ApiParam({ name: 'classroomId', example: 3 })

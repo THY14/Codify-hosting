@@ -157,21 +157,20 @@ export class AssignmentService {
   async findAssignmentDetail(id: number, classroomId: number, userId: number):
     Promise<AssignmentDetailDto>
   {
-    const assignment = await this.findOne(id, classroomId, userId);
+    const assignment = await this.repo.findOneWithChallenges(id, classroomId, userId);
     
-    await this.membershipService.assertIsMember(classroomId, userId);
-    const codingChallenges =
-      await this.codingChallengeService.getAllChallengeByAssignment(id);
-
-    return {
-      ...assignment,
-      codingChallenges: codingChallenges,
-    };
+    return assignment
   }
 
-  // async findAllBySection(sectionId: number): Promise<Assignment[]> {
-  //   return this.repo.findAllBySection(sectionId);
-  // }
+  async getChallengeDetail(
+    classroomId: number,
+    assignmentId: number,
+    challengeId: number,
+    userId: number
+  ) {
+    const challenge = await this.repo.findAssignmentChallengeDetail(assignmentId, challengeId);
+    return challenge;
+  }
 
   async findAllByClassroomId(classroomId: number, userId: number): Promise<Assignment[]> {
     await this.membershipService.assertIsMember(classroomId, userId);
