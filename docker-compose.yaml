@@ -17,6 +17,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/codify
+      CODE_RUNNER_VOLUME_NAME: ${CODE_RUNNER_VOLUME_NAME}
     volumes:
       - code-temp:/code-temp
       - /var/run/docker.sock:/var/run/docker.sock
