@@ -2,7 +2,7 @@
 
 ## Clone Repositories
 ```bash
-git clone https://github.com/JamJam126/Codify-Backend.git && git clone https://github.com/bunheng-try/CODIFY-Frontend.git
+git clone https://github.com/JamJam126/Codify-Backend.git; git clone https://github.com/bunheng-try/CODIFY-Frontend.git
 ```
 
 ---
