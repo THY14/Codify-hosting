@@ -23,6 +23,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
+  frontend:
+    build:
+      context: ../CODIFY-Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - app
+    restart: unless-stopped
+
   redis:
     image: redis:latest
     ports:
@@ -54,12 +64,14 @@ services:
       retries: 5
       start_period: 5s
     restart: unless-stopped
+
   sandbox:
     build: ./code-runner
     image: code-runner-c
     volumes:
       - code-temp:/code-temp
     command: ["sleep", "infinity"]
+
 volumes:
   code-temp:
     name: ${CODE_RUNNER_VOLUME_NAME}
