@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "prisma/prisma.service";
-import { Submission } from "../submission.entity";
+import { Submission } from "../domain/submission.entity";
 import { SubmissionRepository } from "./submission.repository";
-import { SubmissionStatus } from "../submissionStatus.enum";
-import { CodeSubmission } from "../challengeSubmission.entity";
+import { SubmissionStatus } from "../domain/submissionStatus.enum";
+import { CodeSubmission } from "../domain/challengeSubmission.entity";
 
 @Injectable()
 export class SubmissionPrismaRepository implements SubmissionRepository {

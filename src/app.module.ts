@@ -18,7 +18,6 @@ import { SubmissionModule } from './modules/submissions/submission.module';
     AssignmentModule,
     CodingChallengModule,
     SubmissionModule,
-    QueueModule, CodeRunnerModule
   ],
   providers: [PrismaService],
 })
