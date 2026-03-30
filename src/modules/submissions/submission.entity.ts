@@ -1,5 +1,5 @@
 import { CodeSubmission } from "./challengeSubmission.entity";
-import { SubmissionStatus } from "./submissionStatus.enum";
+import { SubmissionStatus } from "./submission.status.enum";
 
 export class Submission {
   constructor(

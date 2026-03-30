@@ -25,7 +25,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { CurrentUserDto } from '../auth/dto/current-user.dto';
 import { UpdateSubmissionDto } from './dto/update-submission.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
-import { SubmissionResponseDto } from './dto/submission-response.dto';
+import { SubmissionDto } from './dto/response/submission.dto';
 
 @ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
@@ -41,7 +41,7 @@ export class SubmissionController {
   @ApiParam({ name: 'assignmentId', example: 1 })
   @ApiCreatedResponse({
     description: 'Draft created successfully',
-    type: SubmissionResponseDto,
+    type: SubmissionDto,
   })
   createDraft(
     @Param('classroomId', ParseIntPipe) classroomId: number,
@@ -60,7 +60,7 @@ export class SubmissionController {
   @ApiBody({ type: UpdateSubmissionDto })
   @ApiOkResponse({
     description: 'Draft updated successfully',
-    type: SubmissionResponseDto,
+    type: SubmissionDto,
   })
   updateDraft(
     @Param('classroomId', ParseIntPipe) classroomId: number,
@@ -86,7 +86,7 @@ export class SubmissionController {
   @ApiParam({ name: 'submissionId', example: 1 })
   @ApiOkResponse({
     description: 'Submission turned in successfully',
-    type: SubmissionResponseDto,
+    type: SubmissionDto,
   })
   turnIn(
     @Param('classroomId', ParseIntPipe) classroomId: number,
@@ -104,7 +104,7 @@ export class SubmissionController {
   @ApiParam({ name: 'assignmentId', example: 1 })
   @ApiOkResponse({
     description: 'List of submissions',
-    type: [SubmissionResponseDto],
+    type: [SubmissionDto],
   })
   getAssignmentSubmissions(
     @Param('classroomId', ParseIntPipe) classroomId: number,
@@ -122,7 +122,7 @@ export class SubmissionController {
   @ApiParam({ name: 'submissionId', example: 1 })
   @ApiOkResponse({
     description: 'Submission found',
-    type: SubmissionResponseDto,
+    type: SubmissionDto,
   })
   @ApiNotFoundResponse({ description: 'Submission not found' })
   getSubmission(
@@ -131,6 +131,6 @@ export class SubmissionController {
     @Param('submissionId', ParseIntPipe) submissionId: number,
     @CurrentUser() user: CurrentUserDto,
   ) {
-    return this.service.getSubmission(classroomId, assignmentId, submissionId, user.id);
+    // return this.service.getSubmission(classroomId, assignmentId, submissionId, user.id);
   }
 }

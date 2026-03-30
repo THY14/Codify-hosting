@@ -3,10 +3,12 @@ import { UpdateSubmissionDto } from "./dto/update-submission.dto";
 import { ClassroomMembershipService } from "../classrooms/application/classroom-membership.service";
 import { Role } from "../classrooms/domain/role.enum";
 import { Submission } from "./submission.entity";
-import { SubmissionStatus } from "./submissionStatus.enum";
+import { SubmissionStatus } from "./submission.status.enum";
 import type { SubmissionRepository } from "./repositories/submission.repository";
 import { CodeSubmission } from "./challengeSubmission.entity";
 import { CodingChallengeService } from "../coding-challenges/application/coding-chellenge.service";
+import { SubmissionDto } from "./dto/response/submission.dto";
+import { deriveSubmissionStatus } from "src/common/utils/derive-submission-status.util";
 
 @Injectable() 
 export class SubmissionService {
@@ -106,13 +108,28 @@ export class SubmissionService {
     assignmentId: number,
     submissionId: number,
     userId: number
-  ) {
-    const submission = await this.repo.findById(submissionId);
+  ): Promise<SubmissionDto> {
+    const submission = await this.repo.findSubmissionDetail(submissionId);
     if (!submission) {
       throw new NotFoundException('Submission not found');
     }
 
-    return submission;
+    return {
+      id: submission.id!,
+      userId: submission.user_id,
+      assignmentId: submission.assignment_id,
+      status: deriveSubmissionStatus(
+        submission.submitted_at || null, 
+        submission.assignment.due_at,
+      ),
+      totalScore: submission.total_score,
+      submittedAt: submission.submitted_at,
+      codeSubmissions: submission.codeSubmissions.map(c => ({
+        id: c.id!,
+        challengeId: c.assignment_challenge_id,
+        code: c.code
+      }))
+    };
   }
 
   // evaluate(classroomId, assignmentId, submissionId, dto)

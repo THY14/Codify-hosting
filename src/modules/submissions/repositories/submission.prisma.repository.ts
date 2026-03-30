@@ -2,8 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "prisma/prisma.service";
 import { Submission } from "../submission.entity";
 import { SubmissionRepository } from "./submission.repository";
-import { SubmissionStatus } from "../submissionStatus.enum";
+import { SubmissionStatus } from "../submission.status.enum";
 import { CodeSubmission } from "../challengeSubmission.entity";
+import { SubmissionDetail } from "../submission.types";
 
 @Injectable()
 export class SubmissionPrismaRepository implements SubmissionRepository {
@@ -54,9 +55,10 @@ export class SubmissionPrismaRepository implements SubmissionRepository {
     const found = await this.prisma.submission.findUnique({
       where: { id },
       include: {
-        codeSubmissions: true
+        codeSubmissions: true,
       }
     });
+
     if (!found) return null;
 
     return Submission.rehydrate({
@@ -78,33 +80,20 @@ export class SubmissionPrismaRepository implements SubmissionRepository {
     });
   }
 
-  async findByStudentAndAssignment(userId: number, assignmentId: number): Promise<Submission[]> {
-    const submissions = await this.prisma.submission.findMany({
-      where: { user_id: userId, assignment_id: assignmentId },
+  async findSubmissionDetail(id: number): Promise<SubmissionDetail | null> {
+    const result = await this.prisma.submission.findFirst({
+      where: { id },
       include: {
-        codeSubmissions: true
+        codeSubmissions: true,
+        assignment: {
+          select: {
+            due_at: true
+          }
+        }
       }
     });
 
-    return submissions.map(s =>
-      Submission.rehydrate({
-        id: s.id,
-        userId: s.user_id,
-        assignmentId: s.assignment_id,
-        status: s.status as SubmissionStatus,
-        totalScore: s.total_score,
-        submittedAt: s.submitted_at,
-        createdAt: s.created_at,
-        updatedAt: s.updated_at,
-        codeSubmissions: s.codeSubmissions.map(cS => {
-          return CodeSubmission.rehydrate({
-            id: cS.id,
-            challengeId: cS.assignment_challenge_id,
-            code: cS.code
-          });
-        }),
-      }),
-    );
+    return result;
   }
 
   async findByAssignment(assignmentId: number): Promise<Submission[]> {

@@ -1,7 +1,7 @@
 import { ApiProperty, ApiSchema } from "@nestjs/swagger";
 
 @ApiSchema({ name: 'CodeSubmission' })
-export class CodeSubmissionResponseDto {
+export class CodeSubmissionDto {
   @ApiProperty({ example: 1 })
   id: number;
 
